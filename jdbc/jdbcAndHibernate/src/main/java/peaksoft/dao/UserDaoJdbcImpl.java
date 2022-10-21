@@ -1,6 +1,5 @@
 package peaksoft.dao;
 
-import org.hibernate.result.UpdateCountOutput;
 import peaksoft.model.User;
 import peaksoft.util.Util;
 
@@ -54,7 +53,7 @@ public class UserDaoJdbcImpl implements UserDao {
     }
 
     public void removeUserById(long id) {
-        String SQL = "delete from users where id = ? ";
+        String SQL = "delete from   where id = ? ";
         try (PreparedStatement statement = connection.prepareStatement(SQL)) {
             statement.setLong(1, id);
             statement.executeUpdate();
@@ -90,4 +89,46 @@ public class UserDaoJdbcImpl implements UserDao {
         }
     }
 
+
+    public void findByUserById(long id) throws SQLException {
+        String SQL = "SELECT * FROM users";
+        List<User> list = new ArrayList<>();
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(SQL)) {
+            while (rs.next()) {
+                list.add(new User(rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getString("lastName"),
+                        rs.getByte("age")));
+            }
+        } catch (SQLException ex) {
+            System.out.println("Table not found!!!");
+        }
+        for (User user : list) {
+            if (user.getId() == id) {
+                System.out.println(user);
+            }
+        }
+    }
+
+    public void addUser(long id, String name, String lastName, byte age) throws SQLException {
+        String SQL = "update users set name = ?, lastName = ?, age = ? where id =?";
+        try(PreparedStatement preparedStatement = connection.prepareStatement(SQL)){
+            preparedStatement.setLong(4,id);
+            preparedStatement.setString(1,name);
+            preparedStatement.setString(2,lastName);
+            preparedStatement.setByte(3, age);
+            preparedStatement.executeUpdate();
+        }catch (SQLException sqlException){
+            sqlException.getMessage();
+        }
+
+    }
 }
+
+
+
+
+
+
+

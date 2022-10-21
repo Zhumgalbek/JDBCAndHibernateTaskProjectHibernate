@@ -3,6 +3,7 @@ package peaksoft;
 import org.junit.Assert;
 import org.junit.Test;
 import peaksoft.model.User;
+import peaksoft.service.UserHibernateServiceImpl;
 import peaksoft.service.UserService;
 import peaksoft.service.UserServiceImpl;
 
@@ -12,6 +13,7 @@ import java.util.List;
 public class UserServiceTest {
 
     private final UserService userService = new UserServiceImpl();
+    private final UserService userService1 = new UserHibernateServiceImpl();
 
     private final String testName = "Kanat";
     private final String testLastName = "Subanov";
@@ -23,8 +25,8 @@ public class UserServiceTest {
     @Test
     public void dropUsersTable() {
         try {
-            userService.dropUsersTable();
-            userService.dropUsersTable();
+            userService1.dropUsersTable();
+            userService1.dropUsersTable();
         } catch (Exception e) {
             Assert.fail("При тестировании удаления таблицы произошло исключение\n" + e);
         }
@@ -33,8 +35,8 @@ public class UserServiceTest {
     @Test
     public void createUsersTable() {
         try {
-            userService.dropUsersTable();
-            userService.createUsersTable();
+            userService1.dropUsersTable();
+            userService1.createUsersTable();
         } catch (Exception e) {
             Assert.fail("При тестировании создания таблицы пользователей произошло исключение\n" + e.getMessage());
         }
@@ -43,12 +45,12 @@ public class UserServiceTest {
     @Test
     public void saveUser() {
         try {
-            userService.dropUsersTable();
-            userService.createUsersTable();
-            userService.saveUser(testName, testLastName, testAge);
+            userService1.dropUsersTable();
+            userService1.createUsersTable();
+            userService1.saveUser(testName, testLastName, testAge);
 
-            User user = userService.getAllUsers().get(0);
-
+            User user = userService1.getAllUsers().get(0);
+            System.out.println(userService1.getAllUsers().size());
             if (!testName.equals(user.getName())
                     || !testLastName.equals(user.getLastName())
                     || testAge != user.getAge()
@@ -64,10 +66,10 @@ public class UserServiceTest {
     @Test
     public void removeUserById() {
         try {
-            userService.dropUsersTable();
-            userService.createUsersTable();
-            userService.saveUser(testName, testLastName, testAge);
-            userService.removeUserById(1L);
+            userService1.dropUsersTable();
+            userService1.createUsersTable();
+            userService1.saveUser(testName, testLastName, testAge);
+            userService1.removeUserById(1L);
         } catch (Exception e) {
             Assert.fail("При тестировании удаления пользователя по id произошло исключение\n" + e);
         }
@@ -76,10 +78,10 @@ public class UserServiceTest {
     @Test
     public void getAllUsers() {
         try {
-            userService.dropUsersTable();
-            userService.createUsersTable();
-            userService.saveUser(testName, testLastName, testAge);
-            List<User> userList = userService.getAllUsers();
+            userService1.dropUsersTable();
+            userService1.createUsersTable();
+            userService1.saveUser(testName, testLastName, testAge);
+            List<User> userList = userService1.getAllUsers();
 
             if (userList.size() != 1) {
                 Assert.fail("Проверьте корректность работы метода сохранения пользователя/удаления или создания таблицы");
@@ -92,12 +94,12 @@ public class UserServiceTest {
     @Test
     public void cleanUsersTable() {
         try {
-            userService.dropUsersTable();
-            userService.createUsersTable();
-            userService.saveUser(testName, testLastName, testAge);
-            userService.cleanUsersTable();
+            userService1.dropUsersTable();
+            userService1.createUsersTable();
+            userService1.saveUser(testName, testLastName, testAge);
+            userService1.cleanUsersTable();
 
-            if (userService.getAllUsers().size() != 0) {
+            if (userService1.getAllUsers().size() != 0) {
                 Assert.fail("Метод очищения таблицы пользователей реализован не корректно");
             }
         } catch (Exception e) {
